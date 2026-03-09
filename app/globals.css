@@ -1,0 +1,9 @@
+@import "tailwindcss";
+
+:root {
+  --color-vermilion: #e54d42;
+  --color-gold: #c5a572;
+  --color-ink: #2c2c2c;
+  --color-paper: #f5f0e8;
+  --color-jade: #5b8c5a;
+}
