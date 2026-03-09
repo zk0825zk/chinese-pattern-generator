@@ -13,7 +13,13 @@ export default function RootLayout({
 }) {
   return (
     <html lang="zh-CN">
-      <body className="bg-[var(--color-paper)] text-[var(--color-ink)] min-h-screen">
+      <head>
+        <link
+          href="https://fonts.googleapis.cn/css2?family=Noto+Serif+SC:wght@400;700&display=swap"
+          rel="stylesheet"
+        />
+      </head>
+      <body className="bg-[var(--color-paper)] text-[var(--color-ink)] min-h-screen" style={{ fontFamily: "'Noto Serif SC', serif" }}>
         {children}
       </body>
     </html>
