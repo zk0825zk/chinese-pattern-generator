@@ -1,4 +1,5 @@
-export type PatternType = 'cloud' | 'meander' | 'floral' | 'geometric' | 'dragon';
+export const PATTERN_TYPES = ['cloud', 'meander', 'floral', 'geometric', 'dragon'] as const;
+export type PatternType = (typeof PATTERN_TYPES)[number];
 
 export type SymmetryMode = 'none' | 'horizontal' | 'vertical' | 'radial' | 'full';
 
