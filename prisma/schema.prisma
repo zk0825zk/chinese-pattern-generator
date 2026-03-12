@@ -1,0 +1,52 @@
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id           String    @id @default(cuid())
+  username     String    @unique
+  passwordHash String
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  patterns     Pattern[]
+  aiTasks      AiTask[]
+}
+
+model Pattern {
+  id         String    @id @default(cuid())
+  userId     String
+  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name       String    @default("未命名纹样")
+  type       String    // cloud | meander | floral | geometric | dragon
+  params     String    // JSON 序列化的 PatternParams
+  svg        String    // SVG 字符串
+  thumbnail  String?   // base64 缩略图
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  aiTasks    AiTask[]
+
+  @@index([userId, createdAt])
+}
+
+model AiTask {
+  id         String   @id @default(cuid())
+  userId     String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  patternId  String?
+  pattern    Pattern? @relation(fields: [patternId], references: [id], onDelete: SetNull)
+  prompt     String
+  status     String   @default("pending") // pending | processing | completed | failed
+  result     String?  // 任务输出内容或资源引用
+  error      String?
+  provider   String   // openai | gemini | local
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([userId, status])
+  @@index([patternId])
+}
