@@ -1,9 +1,14 @@
-export const PATTERN_TYPES = ['cloud', 'meander', 'floral', 'geometric', 'dragon'] as const;
+export const PATTERN_TYPES = [
+  'cloud', 'meander', 'floral', 'geometric', 'dragon',
+  'mythical_beast', 'auspicious', 'border', 'custom',
+] as const;
 export type PatternType = (typeof PATTERN_TYPES)[number];
 
 export type SymmetryMode = 'none' | 'horizontal' | 'vertical' | 'radial' | 'full';
 
 export type OutputMode = 'single' | 'seamless';
+
+export type OutputFormat = 'svg' | 'image';
 
 export interface PatternColor {
   primary: string;
@@ -18,19 +23,22 @@ export interface PatternParams {
   density: number;
   symmetry: SymmetryMode;
   mode: OutputMode;
+  outputFormat: OutputFormat;
   tileSize: number;
   width: number;
   height: number;
-  seed: number;
+  customPrompt?: string;
+  provider?: string;
+  seed?: number;
 }
 
 export interface PatternResult {
-  svg: string;
+  resultType: OutputFormat;
+  result: string;
   params: PatternParams;
+  prompt: string;
   timestamp: number;
 }
-
-export type PatternGenerator = (params: PatternParams) => string;
 
 export const DEFAULT_PARAMS: PatternParams = {
   type: 'cloud',
@@ -43,8 +51,8 @@ export const DEFAULT_PARAMS: PatternParams = {
   density: 5,
   symmetry: 'none',
   mode: 'single',
+  outputFormat: 'svg',
   tileSize: 200,
   width: 800,
   height: 600,
-  seed: Date.now(),
 };
