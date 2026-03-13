@@ -47,7 +47,11 @@ export function PatternCanvas({ result, resultType, isLoading, error }: PatternC
               style={{ animation: 'fadeInUp 0.5s ease-out' }}
             >
               <img
-                src={result.startsWith('data:') ? result : `data:image/png;base64,${result}`}
+                src={
+                  result.startsWith('data:') ? result
+                  : result.startsWith('PHN2Z') ? `data:image/svg+xml;base64,${result}`
+                  : `data:image/png;base64,${result}`
+                }
                 alt="AI 生成的纹样"
                 className="max-w-full max-h-full object-contain rounded"
               />

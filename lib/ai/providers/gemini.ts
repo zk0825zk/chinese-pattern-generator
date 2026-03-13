@@ -16,9 +16,14 @@ export class GeminiAdapter implements AiAdapter {
     return this.generateImage(apiKey, request);
   }
 
+  private getBaseUrl(): string {
+    return (process.env.AI_GEMINI_BASE_URL || 'https://generativelanguage.googleapis.com').replace(/\/+$/, '');
+  }
+
   private async generateSvg(apiKey: string, request: AiGenerateRequest): Promise<AiGenerateResult> {
+    const baseUrl = this.getBaseUrl();
     const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`,
+      `${baseUrl}/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`,
       {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -46,8 +51,9 @@ export class GeminiAdapter implements AiAdapter {
   }
 
   private async generateImage(apiKey: string, request: AiGenerateRequest): Promise<AiGenerateResult> {
+    const baseUrl = this.getBaseUrl();
     const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent?key=${apiKey}`,
+      `${baseUrl}/v1beta/models/gemini-2.0-flash-exp:generateContent?key=${apiKey}`,
       {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

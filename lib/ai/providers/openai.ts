@@ -16,8 +16,13 @@ export class OpenAiAdapter implements AiAdapter {
     return this.generateImage(apiKey, request);
   }
 
+  private getBaseUrl(): string {
+    return (process.env.AI_OPENAI_BASE_URL || 'https://api.openai.com').replace(/\/+$/, '');
+  }
+
   private async generateSvg(apiKey: string, request: AiGenerateRequest): Promise<AiGenerateResult> {
-    const response = await fetch('https://api.openai.com/v1/chat/completions', {
+    const baseUrl = this.getBaseUrl();
+    const response = await fetch(`${baseUrl}/v1/chat/completions`, {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${apiKey}`,
@@ -50,7 +55,8 @@ export class OpenAiAdapter implements AiAdapter {
   }
 
   private async generateImage(apiKey: string, request: AiGenerateRequest): Promise<AiGenerateResult> {
-    const response = await fetch('https://api.openai.com/v1/images/generations', {
+    const baseUrl = this.getBaseUrl();
+    const response = await fetch(`${baseUrl}/v1/images/generations`, {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${apiKey}`,

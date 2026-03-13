@@ -117,7 +117,11 @@ export function HistoryPanel({
                 >
                   {'resultType' in item && item.resultType === 'image' ? (
                     <img
-                      src={(item.result || '').startsWith('data:') ? item.result : `data:image/png;base64,${item.result}`}
+                      src={
+                        (item.result || '').startsWith('data:') ? item.result
+                        : (item.result || '').startsWith('PHN2Z') ? `data:image/svg+xml;base64,${item.result}`
+                        : `data:image/png;base64,${item.result}`
+                      }
                       alt="纹样"
                       className="w-full h-full object-cover"
                     />
