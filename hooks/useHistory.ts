@@ -13,7 +13,21 @@ export function useHistory() {
     try {
       const stored = localStorage.getItem(STORAGE_KEY);
       if (stored) {
-        setHistory(JSON.parse(stored));
+        const parsed = JSON.parse(stored);
+        // 迁移旧格式数据：svg -> result + resultType
+        const migrated = parsed.map((item: Record<string, unknown>) => {
+          if ('svg' in item && !('result' in item)) {
+            return {
+              resultType: 'svg' as const,
+              result: item.svg as string,
+              params: item.params,
+              prompt: '',
+              timestamp: item.timestamp,
+            };
+          }
+          return item;
+        });
+        setHistory(migrated);
       }
     } catch {
       // localStorage 不可用或数据损坏
