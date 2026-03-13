@@ -34,6 +34,7 @@ export const GET = withAuth(async (_req, { userId, params }) => {
           status: updated.status,
           result: updated.result,
           error: updated.error,
+          prompt: updated.prompt,
           createdAt: updated.createdAt,
         },
       });
@@ -45,6 +46,7 @@ export const GET = withAuth(async (_req, { userId, params }) => {
         status: task.status,
         result: task.result,
         error: task.error,
+        prompt: task.prompt,
         createdAt: task.createdAt,
       },
     });
