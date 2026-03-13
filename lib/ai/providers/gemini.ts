@@ -1,4 +1,5 @@
 import type { AiAdapter, AiGenerateRequest, AiGenerateResult } from '../adapter';
+import { extractSvg } from '../svg-extractor';
 
 export class GeminiAdapter implements AiAdapter {
   readonly provider = 'gemini';
@@ -9,6 +10,42 @@ export class GeminiAdapter implements AiAdapter {
       throw new Error('AI_GEMINI_API_KEY is not configured');
     }
 
+    if (request.outputFormat === 'svg') {
+      return this.generateSvg(apiKey, request);
+    }
+    return this.generateImage(apiKey, request);
+  }
+
+  private async generateSvg(apiKey: string, request: AiGenerateRequest): Promise<AiGenerateResult> {
+    const response = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          contents: [{ parts: [{ text: request.prompt }] }],
+          systemInstruction: { parts: [{ text: '你是一个专业的 SVG 矢量图形生成器。请只输出 SVG 代码，不要包含任何解释文字。' }] },
+        }),
+      },
+    );
+
+    if (!response.ok) {
+      const error = await response.text();
+      throw new Error(`Gemini API error: ${error}`);
+    }
+
+    const data = await response.json();
+    const text = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
+    const result = extractSvg(text);
+
+    if (!result.success) {
+      throw new Error(result.error);
+    }
+
+    return { svgCode: result.svg, metadata: { model: 'gemini-2.0-flash' } };
+  }
+
+  private async generateImage(apiKey: string, request: AiGenerateRequest): Promise<AiGenerateResult> {
     const response = await fetch(
       `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent?key=${apiKey}`,
       {
