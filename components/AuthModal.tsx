@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { validateUsername, validatePassword } from '@/lib/validations';
 import { ApiClientError } from '@/lib/api-client';
 
@@ -19,6 +19,16 @@ export function AuthModal({ open, onClose, onLogin, onRegister }: AuthModalProps
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [submitting, setSubmitting] = useState(false);
+
+  // ESC 键关闭
+  useEffect(() => {
+    if (!open) return;
+    const handleEsc = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose();
+    };
+    document.addEventListener('keydown', handleEsc);
+    return () => document.removeEventListener('keydown', handleEsc);
+  }, [open, onClose]);
 
   if (!open) return null;
 
@@ -56,7 +66,7 @@ export function AuthModal({ open, onClose, onLogin, onRegister }: AuthModalProps
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4" onClick={onClose}>
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4" role="dialog" aria-modal="true" onClick={onClose}>
       {/* 遮罩 */}
       <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" />
 

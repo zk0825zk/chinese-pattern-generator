@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import type { PatternResult } from '@/generators/types';
 
 interface SaveToCloudButtonProps {
@@ -11,12 +11,19 @@ interface SaveToCloudButtonProps {
 
 export function SaveToCloudButton({ result, saving, onSave }: SaveToCloudButtonProps) {
   const [saved, setSaved] = useState(false);
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (timerRef.current) clearTimeout(timerRef.current);
+    };
+  }, []);
 
   const handleClick = async () => {
     try {
       await onSave(result);
       setSaved(true);
-      setTimeout(() => setSaved(false), 2000);
+      timerRef.current = setTimeout(() => setSaved(false), 2000);
     } catch {
       // 错误由上层处理
     }

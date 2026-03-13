@@ -27,5 +27,21 @@ function validateAndReturn(svg: string): { success: true; svg: string } | { succ
   if (!/<\/svg>/i.test(svg)) {
     return { success: false, error: 'SVG 代码未正确闭合' };
   }
-  return { success: true, svg };
+  return { success: true, svg: sanitizeSvg(svg) };
+}
+
+/**
+ * 清理 SVG 中潜在的 XSS 风险元素
+ */
+function sanitizeSvg(svg: string): string {
+  let clean = svg;
+  // 移除 <script> 标签
+  clean = clean.replace(/<script[\s\S]*?<\/script>/gi, '');
+  // 移除 <foreignObject> 标签
+  clean = clean.replace(/<foreignObject[\s\S]*?<\/foreignObject>/gi, '');
+  // 移除事件处理器属性 (on*)
+  clean = clean.replace(/\s+on\w+\s*=\s*(?:"[^"]*"|'[^']*'|[^\s>]*)/gi, '');
+  // 移除 javascript: URL
+  clean = clean.replace(/(?:href|xlink:href)\s*=\s*["']javascript:[^"']*["']/gi, '');
+  return clean;
 }
