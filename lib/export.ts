@@ -54,3 +54,13 @@ export function downloadPng(svg: string, width: number, height: number, filename
     img.src = svgToDataUrl(svg);
   });
 }
+
+export function downloadBase64Image(base64: string, filename: string = 'pattern.png'): void {
+  const data = base64.startsWith('data:') ? base64 : `data:image/png;base64,${base64}`;
+  const a = document.createElement('a');
+  a.href = data;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+}
