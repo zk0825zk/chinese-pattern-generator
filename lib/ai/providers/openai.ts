@@ -20,8 +20,17 @@ export class OpenAiAdapter implements AiAdapter {
     return (process.env.AI_OPENAI_BASE_URL || 'https://api.openai.com').replace(/\/+$/, '');
   }
 
+  private getChatModel(): string {
+    return process.env.AI_OPENAI_CHAT_MODEL || 'gpt-4o';
+  }
+
+  private getImageModel(): string {
+    return process.env.AI_OPENAI_IMAGE_MODEL || 'dall-e-3';
+  }
+
   private async generateSvg(apiKey: string, request: AiGenerateRequest): Promise<AiGenerateResult> {
     const baseUrl = this.getBaseUrl();
+    const model = this.getChatModel();
     const response = await fetch(`${baseUrl}/v1/chat/completions`, {
       method: 'POST',
       headers: {
@@ -29,7 +38,7 @@ export class OpenAiAdapter implements AiAdapter {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'gpt-4o',
+        model,
         messages: [
           { role: 'system', content: '你是一个专业的 SVG 矢量图形生成器。请只输出 SVG 代码，不要包含任何解释文字。' },
           { role: 'user', content: request.prompt },
@@ -51,11 +60,12 @@ export class OpenAiAdapter implements AiAdapter {
       throw new Error(result.error);
     }
 
-    return { svgCode: result.svg, metadata: { model: 'gpt-4o' } };
+    return { svgCode: result.svg, metadata: { model } };
   }
 
   private async generateImage(apiKey: string, request: AiGenerateRequest): Promise<AiGenerateResult> {
     const baseUrl = this.getBaseUrl();
+    const model = this.getImageModel();
     const response = await fetch(`${baseUrl}/v1/images/generations`, {
       method: 'POST',
       headers: {
@@ -63,7 +73,7 @@ export class OpenAiAdapter implements AiAdapter {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'dall-e-3',
+        model,
         prompt: request.prompt,
         n: 1,
         size: '1024x1024',
@@ -79,7 +89,7 @@ export class OpenAiAdapter implements AiAdapter {
     const data = await response.json();
     return {
       imageBase64: data.data?.[0]?.b64_json,
-      metadata: { model: 'dall-e-3', revised_prompt: data.data?.[0]?.revised_prompt },
+      metadata: { model, revised_prompt: data.data?.[0]?.revised_prompt },
     };
   }
 }
