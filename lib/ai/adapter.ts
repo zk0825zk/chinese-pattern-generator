@@ -1,5 +1,6 @@
 export interface AiGenerateRequest {
   prompt: string;
+  outputFormat: 'svg' | 'image';
   style?: string;
   width?: number;
   height?: number;
@@ -8,6 +9,7 @@ export interface AiGenerateRequest {
 export interface AiGenerateResult {
   imageUrl?: string;
   imageBase64?: string;
+  svgCode?: string;
   metadata?: Record<string, unknown>;
 }
 
