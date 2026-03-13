@@ -22,10 +22,11 @@ model Pattern {
   userId     String
   user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   name       String    @default("未命名纹样")
-  type       String    // cloud | meander | floral | geometric | dragon
+  type       String    // cloud | meander | floral | geometric | dragon | mythical_beast | auspicious | border | custom
   params     String    // JSON 序列化的 PatternParams
   svg        String    // SVG 字符串
   thumbnail  String?   // base64 缩略图
+  outputFormat String  @default("svg") // svg | image
   createdAt  DateTime  @default(now())
   updatedAt  DateTime  @updatedAt
   aiTasks    AiTask[]
