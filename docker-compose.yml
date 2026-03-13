@@ -1,0 +1,17 @@
+services:
+  web:
+    build: .
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./data:/app/data
+    environment:
+      - DATABASE_URL=file:/app/data/data.db
+      - JWT_SECRET=${JWT_SECRET:-please-change-this-secret-min-32-chars!!}
+      - AI_OPENAI_API_KEY=${AI_OPENAI_API_KEY:-}
+      - AI_OPENAI_BASE_URL=${AI_OPENAI_BASE_URL:-}
+      - AI_OPENAI_CHAT_MODEL=${AI_OPENAI_CHAT_MODEL:-}
+      - AI_OPENAI_IMAGE_MODEL=${AI_OPENAI_IMAGE_MODEL:-}
+      - AI_GEMINI_API_KEY=${AI_GEMINI_API_KEY:-}
+      - AI_GEMINI_BASE_URL=${AI_GEMINI_BASE_URL:-}
+    restart: unless-stopped
