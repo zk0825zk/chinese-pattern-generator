@@ -5,8 +5,10 @@ import type { PatternResult } from '@/generators/types';
 import { DEFAULT_PARAMS } from '@/generators/types';
 
 const mockResult: PatternResult = {
-  svg: '<svg></svg>',
+  resultType: 'svg',
+  result: '<svg></svg>',
   params: { ...DEFAULT_PARAMS, seed: 42 },
+  prompt: '测试提示词',
   timestamp: Date.now(),
 };
 
